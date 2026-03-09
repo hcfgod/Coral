@@ -371,7 +371,10 @@ namespace Coral {
 
 		int status = s_CoreCLRFunctions.GetManagedFunctionPtr(InAssemblyPath.c_str(), InTypeName, InMethodName, InDelegateType, nullptr, &funcPtr);
 		if(status != StatusCode::Success || !funcPtr) {
-			std::cerr << "Failed to retrieve managed function pointer `" << InTypeName << "`::`" << InMethodName << "` from `" << InAssemblyPath << "`" << std::endl;
+			const std::string typeName = InTypeName ? StringHelper::ConvertWideToUtf8(UCStringView(InTypeName)) : std::string("<null>");
+			const std::string methodName = InMethodName ? StringHelper::ConvertWideToUtf8(UCStringView(InMethodName)) : std::string("<null>");
+			const std::string assemblyPath = StringHelper::ConvertWideToUtf8(UCStringView(InAssemblyPath.c_str()));
+			std::cerr << "Failed to retrieve managed function pointer `" << typeName << "`::`" << methodName << "` from `" << assemblyPath << "`" << std::endl;
 			CORAL_VERIFY(false);
 		}
 
