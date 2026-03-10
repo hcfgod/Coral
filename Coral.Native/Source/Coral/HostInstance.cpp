@@ -260,8 +260,11 @@ namespace Coral {
 			CORAL_VERIFY(status == StatusCode::Success || status == StatusCode::Success_HostAlreadyInitialized || status == StatusCode::Success_DifferentRuntimeProperties);
 			CORAL_VERIFY(m_HostFXRContext != nullptr);
 
-			std::filesystem::path coralDirectoryPath = m_Settings.CoralDirectory;
-			s_CoreCLRFunctions.SetRuntimePropertyValue(m_HostFXRContext, CORAL_STR("APP_CONTEXT_BASE_DIRECTORY"), coralDirectoryPath.c_str());
+			if (status == StatusCode::Success)
+			{
+				std::filesystem::path coralDirectoryPath = m_Settings.CoralDirectory;
+				s_CoreCLRFunctions.SetRuntimePropertyValue(m_HostFXRContext, CORAL_STR("APP_CONTEXT_BASE_DIRECTORY"), coralDirectoryPath.c_str());
+			}
 
 			status = s_CoreCLRFunctions.GetRuntimeDelegate(m_HostFXRContext, hdt_load_assembly_and_get_function_pointer, (void**) &s_CoreCLRFunctions.GetManagedFunctionPtr);
 			CORAL_VERIFY(status == StatusCode::Success);
