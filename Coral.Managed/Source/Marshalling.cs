@@ -81,6 +81,23 @@ public static class Marshalling
 			NativeString nativeString = (NativeString) InValue;
 			Marshal.StructureToPtr((NativeString) InValue, OutValue, false);
 		}
+		else if (type != null && !type.IsValueType)
+		{
+			if (InValue == null)
+			{
+				Marshal.WriteIntPtr(OutValue, IntPtr.Zero);
+				Marshal.WriteIntPtr(OutValue, IntPtr.Size, IntPtr.Zero);
+			}
+			else
+			{
+				var handle = GCHandle.Alloc(InValue, GCHandleType.Normal);
+#if DEBUG
+				AssemblyLoader.RegisterHandle(InValue.GetType().Assembly, handle);
+#endif
+				Marshal.WriteIntPtr(OutValue, GCHandle.ToIntPtr(handle));
+				Marshal.WriteIntPtr(OutValue, IntPtr.Size, IntPtr.Zero);
+			}
+		}
 		else if (type != null && type.IsPointer)
 		{
 			unsafe
