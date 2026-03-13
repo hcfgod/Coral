@@ -448,6 +448,11 @@ internal static class ManagedObject
 				Bool32 value = (Bool32) fieldValue;
 				fieldInfo.SetValue(target, (bool) value);
 			}
+			else if (fieldInfo.FieldType.IsEnum)
+			{
+				int enumValue = Marshal.ReadInt32(InValue);
+				fieldInfo.SetValue(target, Enum.ToObject(fieldInfo.FieldType, enumValue));
+			}
 			else
 			{
 				object? value = Marshalling.MarshalPointer(InValue, fieldInfo.FieldType);
